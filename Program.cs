@@ -38,4 +38,6 @@ foreach (var commit in repo.Commits)
             Console.WriteLine(ad.Path);
         }
     }
+    
+    
 }
