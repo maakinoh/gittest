@@ -5,7 +5,6 @@ Console.WriteLine("Hello, World!");
 
 var repo = new Repository("./.git");
 
-
 foreach (var commit in repo.Commits)
 {
     var parents = commit.Parents;
