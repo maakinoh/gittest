@@ -5,10 +5,25 @@ Console.WriteLine("Hello, World!");
 
 var repo = new Repository("/Users/hanneskuss/Dev/gittest/");
 
+foreach (var treeEntry in repo.Head.Tip.Tree)
+{
+    foreach (var commitsOfFile in repo.Commits.QueryBy(treeEntry.Path))
+    {
+        Console.WriteLine("File:{0}, Commit:{1}",treeEntry.Path, commitsOfFile.Commit.Sha);
+    }
+
+    
+}
+
+
+
+
 Dictionary<String, Dictionary<String,int>> fileHist = new Dictionary<string, Dictionary<String,int>>();
+
 
 foreach (var commit in repo.Commits)
 {
+    
     var parents = commit.Parents;
     foreach (var parent in parents)
     {
