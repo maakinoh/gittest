@@ -10,7 +10,7 @@ class Program
     {
         // Replace this path with the path to your repository
         string repoPath = "/Users/hanneskuss/Dev/gittest";
-        
+        // jojo
         
         using (var repo = new Repository(repoPath))
         {
@@ -46,8 +46,18 @@ class Program
             {
                 Console.WriteLine($"Commit: {commit.Sha}, Message: {commit.Message}");
             }
+
+            Console.WriteLine($"Distinct commits count: {commits.Count}");
+
+            // Print out the commit SHA and message for each distinct commit
+            foreach (var commit in commits)
+            {
+                Console.WriteLine($"Commit: {commit.Sha}, Message: {commit.Message}");
+            }
         }
     }
+    
+    
 }
 // Der nächste Test
 // lol 
