@@ -13,7 +13,7 @@ class Program
         using (var repo = new Repository(repoPath))
         {
             // Replace "your-branch-name" with the name of the branch you want to get commits from
-            var branch = repo.Branches["main"];
+            var branch = repo.Branches["next"];
 
             if (branch == null)
             {
@@ -28,8 +28,8 @@ class Program
                 // Check if the commit is reachable from the specified branch
                 if (repo.Commits.QueryBy(new CommitFilter
                     {
-                        IncludeReachableFrom = branch,
-                        ExcludeReachableFrom = branch.Tip,
+                        IncludeReachableFrom = repo.Branches["next"],
+                        ExcludeReachableFrom = repo.Branches["main"].Tip,
                         SortBy = CommitSortStrategies.Topological | CommitSortStrategies.Time,
                     }).Any(c => c.Sha == commit.Sha))
                 {
