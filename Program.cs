@@ -1,58 +1,49 @@
-﻿// See https://aka.ms/new-console-template for more information
+﻿using System;
 using LibGit2Sharp;
+using System.Collections.Generic;
 
-Console.WriteLine("Hello, World!");
-
-var repo = new Repository("/Users/hanneskuss/Dev/gittest/");
-
-foreach (var treeEntry in repo.Head.Tip.Tree)
+class Program
 {
-    foreach (var commitsOfFile in repo.Commits.QueryBy(treeEntry.Path))
+    static void Main(string[] args)
     {
-        Console.WriteLine("File:{0}, Commit:{1}",treeEntry.Path, commitsOfFile.Commit.Sha);
-    }
-
-    
-}
-
-
-
-
-Dictionary<String, Dictionary<String,int>> fileHist = new Dictionary<string, Dictionary<String,int>>();
-
-
-foreach (var commit in repo.Commits)
-{
-    
-    var parents = commit.Parents;
-    foreach (var parent in parents)
-    {
-        var diff = repo.Diff.Compare<TreeChanges>(parent.Tree, commit.Tree);
-        foreach (var ad in diff.Added)
+        // Replace this path with the path to your repository
+        string repoPath = "/Users/hanneskuss/Dev/gittest";
+        
+        
+        using (var repo = new Repository(repoPath))
         {
-            Console.WriteLine(ad.Path);
-        }
-        foreach (var ad in diff.Modified)
-        {
-            if (fileHist.ContainsKey(ad.Path))
+            // Replace "your-branch-name" with the name of the branch you want to get commits from
+            var branch = repo.Branches["main"];
+
+            if (branch == null)
             {
-                if (fileHist[ad.Path].ContainsKey(commit.Author.Email))
+                Console.WriteLine("Branch not found");
+                return;
+            }
+
+            var commits = new HashSet<Commit>();
+
+            foreach (var commit in branch.Commits)
+            {
+                // Check if the commit is reachable from the specified branch
+                if (repo.Commits.QueryBy(new CommitFilter
+                    {
+                        IncludeReachableFrom = branch,
+                        ExcludeReachableFrom = branch.Tip,
+                        SortBy = CommitSortStrategies.Topological | CommitSortStrategies.Time,
+                    }).Any(c => c.Sha == commit.Sha))
                 {
-                    fileHist[ad.Path][commit.Author.Email] += 1;
-                }
-                else
-                {
-                    fileHist[ad.Path][commit.Author.Email] = 1;
+                    commits.Add(commit);
                 }
             }
-            else
+
+            Console.WriteLine($"Distinct commits count: {commits.Count}");
+
+            // Print out the commit SHA and message for each distinct commit
+            foreach (var commit in commits)
             {
-                fileHist[ad.Path] = new Dictionary<string, int>();
-                fileHist[ad.Path][commit.Author.Email] = 1;
+                Console.WriteLine($"Commit: {commit.Sha}, Message: {commit.Message}");
             }
-            Console.WriteLine(ad.Path);
         }
     }
-    
-    
 }
