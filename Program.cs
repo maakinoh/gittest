@@ -25,6 +25,7 @@ Dictionary<String, Dictionary<String,int>> fileHist = new Dictionary<string, Dic
 foreach (var commit in repo.Commits)
 {
     // lol
+    // bla
     var parents = commit.Parents;
     foreach (var parent in parents)
     {
