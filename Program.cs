@@ -10,7 +10,7 @@ class Program
     {
         // Replace this path with the path to your repository
         string repoPath = "/Users/hanneskuss/Dev/gittest";
-        
+        // jojo
         
         using (var repo = new Repository(repoPath))
         {
